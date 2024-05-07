@@ -2,28 +2,92 @@
 #include "utils.h"
 #include "doubly-linked-list.h"
 #include "bubble_sort.h"
+#include <chrono>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 using std::cin;
 using std::cout;
 using std::endl;
 using std::string;
 
+using std::chrono::high_resolution_clock;
+using std::chrono::duration_cast;
+using std::chrono::nanoseconds;
 
 int main(){
-    Node* head = nullptr;
-    displayList(head);
+
+    srand(time(NULL));
+
+    // linked list com 10 nós
+    Node* head_10 = nullptr;
+    for (int i = 0; i < 10; ++i) {
+        insertEnd(&head_10, rand() % 100); 
+    }
+    cout << "linked list com 10 nós: " << endl;
+    displayList(head_10);
+    cout << " " << endl;
+
+    cout << "linked list com 10 nós (pós bubble-sort): " << endl;
+    auto timeStart10 = high_resolution_clock::now();
+    bubbleSort(&head_10);
+    auto timeStop10 = high_resolution_clock::now();
+    displayList(head_10);
+
+    auto timeDuration10 = duration_cast<nanoseconds>(timeStop10 - timeStart10);
+    cout << "Tempo decorrido: " << timeDuration10.count() << " nanosegundos." << endl;
 
     iguais();
 
-    insertEnd(&head, 7);
-    insertEnd(&head, 53);
-    insertEnd(&head, 42);
-    insertEnd(&head, 2);
-    insertEnd(&head, 666);
+    // linked list com 100 nós
+    Node* head_100 = nullptr;
+    for (int i = 0; i < 100; ++i) {
+        insertEnd(&head_100, rand() % 100); 
+    }
+    cout << "linked list com 100 nós: " << endl;
+    displayList(head_100);
+    cout << " " << endl;
 
-    bubbleSort(&head);
+    cout << "linked list com 100 nós (pós bubble-sort): " << endl;
+    auto timeStart100 = high_resolution_clock::now();
+    bubbleSort(&head_100);
+    auto timeStop100 = high_resolution_clock::now();
+    displayList(head_100);
 
-    displayList(head);
+    auto timeDuration100 = duration_cast<nanoseconds>(timeStop100 - timeStart100);
+    cout << "Tempo decorrido: " << timeDuration100.count() << " nanosegundos." << endl;
+    iguais();
+
+    // linked list com 1000 nós
+    Node* head_1000 = nullptr;
+    for (int i = 0; i < 1000; ++i) {
+        insertEnd(&head_1000, rand() % 100); 
+    }
+    cout << "linked list com 1000 nós: " << endl;
+    displayList(head_1000);
+    cout << " " << endl;
+
+    cout << "linked list com 1000 nós (pós bubble-sort): " << endl;
+    auto timeStart1000 = high_resolution_clock::now();
+    bubbleSort(&head_1000);
+    auto timeStop1000 = high_resolution_clock::now();
+    displayList(head_1000);
+
+    auto timeDuration1000 = duration_cast<nanoseconds>(timeStop1000 - timeStart1000);
+    cout << "Tempo decorrido: " << timeDuration1000.count() << " nanosegundos." << endl;
+
+    iguais();
+
+    // insertEnd(&head, 7);
+    // insertEnd(&head, 53);
+    // insertEnd(&head, 42);
+    // insertEnd(&head, 2);
+    // insertEnd(&head, 666);
+
+    // bubbleSort(&head);
+
+    // displayList(head);
     
     return 0;
 }
