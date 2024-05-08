@@ -64,7 +64,7 @@ void optimizedBubbleSort(Node **head)
         while (current->ptrNext != end) {
             Node *next = current->ptrNext;
             if (current->iPayload > next->iPayload) {
-                swapNodes(head, current, next);
+                swapNodesValues(current->iPayload, next->iPayload);
                 swapped = true;
             }
             previous = current;
@@ -90,7 +90,7 @@ void bubbleSort(Node **head)
         while (temp1->ptrNext != nullptr) {
             temp2 = temp1->ptrNext;
             if (temp1->iPayload > temp2->iPayload) {
-                swapNodes(head, temp1, temp2);
+                swapNodesValues(temp1->iPayload, temp2->iPayload);
                 swapped = true;
             }
             temp1 = temp2;
