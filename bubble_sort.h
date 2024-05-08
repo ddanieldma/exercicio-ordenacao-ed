@@ -47,6 +47,32 @@ void swapNodes(Node **head, Node *node1, Node *node2) {
     else if (*head == node2) *head = node1;
 }
 
+void optimizedBubbleSort(Node **head) 
+{
+    if (*head == nullptr){
+        return;
+    }
+
+    Node *end = nullptr; 
+    bool swapped;
+
+    do {
+        swapped = false;
+        Node *current = *head;
+        Node *previous = nullptr; 
+
+        while (current->ptrNext != end) {
+            Node *next = current->ptrNext;
+            if (current->iPayload > next->iPayload) {
+                swapNodes(head, current, next);
+                swapped = true;
+            }
+            previous = current;
+            current = next;
+        }
+        end = current; 
+    } while (swapped);
+}
 void bubbleSort(Node **head)
 {
     if (*head == nullptr){
