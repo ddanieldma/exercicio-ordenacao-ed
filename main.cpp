@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "doubly-linked-list.h"
 #include "bubble_sort.h"
+#include "selection-sort.h"
 #include <chrono>
 #include <stdio.h>
 #include <stdlib.h>
@@ -121,15 +122,108 @@ int main(){
 
     iguais();
 
-    // insertEnd(&head, 7);
-    // insertEnd(&head, 53);
-    // insertEnd(&head, 42);
-    // insertEnd(&head, 2);
-    // insertEnd(&head, 666);
+    srand(time(NULL));
 
-    // bubbleSort(&head);
+    // linked list com 10 nós
+    head_10 = nullptr;
+    for (int i = 0; i < 10; ++i) {
+        insertEnd(&head_10, rand() % 100); 
+    }
 
-    // displayList(head);
-    
+    head_10_opt = nullptr;
+    for (int i = 0; i < 10; ++i) {
+        insertEnd(&head_10_opt, rand() % 100); 
+    }
+
+    cout << "linked list com 10 nós: " << endl;
+    displayList(head_10);
+    cout << " " << endl;
+
+    cout << "linked list com 10 nós (pós selection-sort): " << endl;
+    timeStart10 = high_resolution_clock::now();
+    selectionSort(&head_10);
+    timeStop10 = high_resolution_clock::now();
+
+    timeStart10opt = high_resolution_clock::now();
+    optimizedSelectionSort(&head_10_opt);
+    timeStop10opt = high_resolution_clock::now();
+
+    displayList(head_10);
+
+    timeDuration10 = duration_cast<nanoseconds>(timeStop10 - timeStart10);
+    cout << "Tempo decorrido: " << timeDuration10.count() << " nanosegundos." << endl;
+
+    timeDuration10opt = duration_cast<nanoseconds>(timeStop10opt - timeStart10opt);
+    cout << "Tempo decorrido (otimizado): " << timeDuration10opt.count() << " nanosegundos." << endl;
+
+    iguais();
+
+    // linked list com 100 nós
+    head_100 = nullptr;
+    for (int i = 0; i < 100; ++i) {
+        insertEnd(&head_100, rand() % 100); 
+    }
+
+    head_100_opt = nullptr;
+    for (int i = 0; i < 100; ++i) {
+        insertEnd(&head_100_opt, rand() % 100); 
+    }
+
+    cout << "linked list com 100 nós: " << endl;
+    displayList(head_100);
+    cout << " " << endl;
+
+    cout << "linked list com 100 nós (pós selection-sort): " << endl;
+    timeStart100 = high_resolution_clock::now();
+    selectionSort(&head_100);
+    timeStop100 = high_resolution_clock::now();
+
+    timeStart100opt = high_resolution_clock::now();
+    optimizedSelectionSort(&head_100_opt);
+    timeStop100opt = high_resolution_clock::now();
+
+    displayList(head_100);
+
+    timeDuration100 = duration_cast<nanoseconds>(timeStop100 - timeStart100);
+    cout << "Tempo decorrido: " << timeDuration100.count() << " nanosegundos." << endl;
+
+    timeDuration100opt = duration_cast<nanoseconds>(timeStop100opt - timeStart100opt);
+    cout << "Tempo decorrido (otimizado): " << timeDuration100opt.count() << " nanosegundos." << endl;
+    iguais();
+
+    // linked list com 1000 nós
+    head_1000 = nullptr;
+    for (int i = 0; i < 1000; ++i) {
+        insertEnd(&head_1000, rand() % 100); 
+    }
+
+    head_1000_opt = nullptr;
+    for (int i = 0; i < 1000; ++i) {
+        insertEnd(&head_1000_opt, rand() % 100); 
+    }
+
+    cout << "linked list com 1000 nós: " << endl;
+    displayList(head_1000);
+    cout << " " << endl;
+
+    cout << "linked list com 1000 nós (pós selection-sort): " << endl;
+    timeStart1000 = high_resolution_clock::now();
+    selectionSort(&head_1000);
+    timeStop1000 = high_resolution_clock::now();
+
+    timeStart1000opt = high_resolution_clock::now();
+    optimizedSelectionSort(&head_1000_opt);
+    timeStop1000opt = high_resolution_clock::now();
+
+    displayList(head_1000);
+
+    timeDuration1000 = duration_cast<nanoseconds>(timeStop1000 - timeStart1000);
+    cout << "Tempo decorrido: " << timeDuration1000.count() << " nanosegundos." << endl;
+
+    timeDuration1000opt = duration_cast<nanoseconds>(timeStop1000opt - timeStart1000opt);
+    cout << "Tempo decorrido (otimizado): " << timeDuration1000opt.count() << " nanosegundos." << endl;
+
+    iguais();
+
     return 0;
 }
