@@ -1,3 +1,56 @@
+#include "doubly-linked-list.h"
+#include <chrono>
+
+using std::chrono::high_resolution_clock;
+using std::chrono::duration_cast;
+using std::chrono::nanoseconds;
+
+void swapNodes(Node **, Node *, Node *);
+void optimizedBubbleSort(Node **);
+void bubbleSort(Node **);
+
+int main()
+{
+    srand(time(NULL));
+    Node* head = nullptr;
+
+    // normal
+    for (int j = 0; j < 100; j++)
+    {
+        head = nullptr;
+
+        for (int i = 0; i < 10000; ++i) {
+            insertEnd(&head, rand() % 10000); 
+        }
+
+        auto timeStart10 = high_resolution_clock::now();
+        bubbleSort(&head);
+        auto timeStop10 = high_resolution_clock::now();
+
+        auto timeDuration10 = duration_cast<nanoseconds>(timeStop10 - timeStart10);
+        cout << "Tempo decorrido: " << timeDuration10.count() << " nanosegundos." << endl;
+    }
+
+    // otimizado
+    for (int j = 0; j < 100; j++)
+    {
+        head = nullptr;
+
+        for (int i = 0; i < 10000; ++i) {
+            insertEnd(&head, rand() % 10000); 
+        }
+
+        auto timeStart10 = high_resolution_clock::now();
+        optimizedBubbleSort(&head);
+        auto timeStop10 = high_resolution_clock::now();
+
+        auto timeDuration10 = duration_cast<nanoseconds>(timeStop10 - timeStart10);
+        cout << "Tempo decorrido: " << timeDuration10.count() << " nanosegundos." << endl;
+    }
+
+    return 0;
+}; 
+
 void swapNodes(Node **head, Node *node1, Node *node2) {
     if (node1 == node2) return;
 
@@ -64,7 +117,7 @@ void optimizedBubbleSort(Node **head)
         while (current->ptrNext != end) {
             Node *next = current->ptrNext;
             if (current->iPayload > next->iPayload) {
-                swapNodesValues(current->iPayload, next->iPayload);
+                swapNodes(head, current, next);
                 swapped = true;
             }
             previous = current;
@@ -90,7 +143,7 @@ void bubbleSort(Node **head)
         while (temp1->ptrNext != nullptr) {
             temp2 = temp1->ptrNext;
             if (temp1->iPayload > temp2->iPayload) {
-                swapNodesValues(temp1->iPayload, temp2->iPayload);
+                swapNodes(head, temp1, temp2);
                 swapped = true;
             }
             temp1 = temp2;
