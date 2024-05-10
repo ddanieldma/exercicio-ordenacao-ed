@@ -24,6 +24,7 @@ void deleteNode(Node**, Node*);
 void insertBefore(Node**, Node*, int);
 Node *searchNodeByValue(Node**, int);
 void DeleteNodeByValue(Node**, int);
+int countElementsList(Node*);
 
 
 Node *createNode(int iPayload){
@@ -227,4 +228,28 @@ void DeleteNodeByValue(Node** head, int iValue){
     deleteNode(head, search);
 
     return;
+}
+
+int countElementsList(Node* node){
+    // Se o nó passado é apenas um ponteiro nulo.
+    if (node == nullptr){
+        cout << "Lista vazia" << endl;
+        return 0;
+    }
+
+    // Se o nó anterior não foi o nullptr (apenas no começo da lista).
+    if (node->ptrPrev != nullptr){
+        cout << "Meio ou Fim da Lista" << endl;
+        return -1;
+    }
+
+    Node* temp = node;
+    int iCount = 0;
+
+    while(temp != nullptr){
+        iCount++;
+        temp = temp->ptrNext;
+    }
+
+    return iCount;
 }
