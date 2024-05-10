@@ -1,28 +1,43 @@
 #include <iostream>
 #include "utils.h"
 #include "doubly-linked-list.h"
-// #include "bubble_sort.h"
+#include "bubble_sort.h"
 #include "selection-sort.h"
 #include <chrono>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <fstream>
 
-using std::cin;
-using std::cout;
-using std::endl;
-using std::string;
+// using std::cin;
+// using std::cout;
+// using std::endl;
+// using std::string;
 
 using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
 using std::chrono::nanoseconds;
+
+using namespace std;
+
 
 int main(){
 
     // Criar 10 listas com 10.000 elementos e ordená-las usando cada um dos algorítmos.
     
     int iRandom;
+    
+    // Declarando variáveis antes para melhoria de desempenho.
+    auto timeStart = high_resolution_clock::now();
+    auto timeEnd = high_resolution_clock::now();
+    auto timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
+    ofstream file;
+    file<<"bs,obs,ss,oss"<<endl;
     for (int i = 0; i < 10; i++){
+        // Criando arquivo.
+        file.open("tempos.csv");
+        // Colocando cabeçalhos.
+        
         // Criando nova lista.
         Node* head = nullptr;
 
@@ -35,14 +50,51 @@ int main(){
             iRandom = rand() % 10000;
             insertEnd(&head, iRandom);
         }
-        int iTamLista = countElementsList(head);
-        cout << "Tamanho da lista " << i << ": " << iTamLista << endl;
+
+        cout << "Lista " << i << " criada." << endl;
+
+        // Bubble Sort.
+        cout << "Ordenando com Bubble Sort: " << endl;
+
+        timeStart = high_resolution_clock::now();
+        bubbleSort(&head);
+        timeEnd = high_resolution_clock::now();
+        timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
+        // Colocando tempo de execução no csv.
+        file<<timeTaken << ",";
+
+        // Optimized Bubble Sort.
+        cout << "Ordenando com Optimized Bubble Sort: " << endl;
+
+        timeStart = high_resolution_clock::now();
+        optimizedBubbleSort(&head);
+        timeEnd = high_resolution_clock::now();
+        timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
+        file<<timeTaken << ",";
+        // cout << "Tempo de execucao: " << timeTaken.count() << " nanossegundos." << endl;
+
+        // Selection Sort.
+        cout << "Ordenando com Selection Sort: " << endl;
+
+        timeStart = high_resolution_clock::now();
+        selectionSort(&head);
+        timeEnd = high_resolution_clock::now();
+        timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
+        file<<timeTaken << ",";
+        // cout << "Tempo de execucao: " << timeTaken.count() << " nanossegundos." << endl;
+
+        // Optimized Selection Sort.
+        cout << "Ordenando com Optimized Selection Sort: " << endl;
+
+        timeStart = high_resolution_clock::now();
+        optimizedSelectionSort(&head);
+        timeEnd = high_resolution_clock::now();
+        timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
+        file<<timeTaken << endl;
+        // cout << "Tempo de execucao: " << timeTaken.count() << " nanossegundos." << endl;
+
     }
     
-    // Bubble Sort.
-    // Optimized Bubble Sort.
-    // Selection Sort.
-    // Optimized Selection Sort.
 
     // srand(time(NULL));
 
@@ -70,7 +122,7 @@ int main(){
     // optimizedBubbleSort(&head_10_opt);
     // auto timeStop10opt = high_resolution_clock::now();
 
-    // displayList(head_10);
+    // // displayList(head_10);
 
     // auto timeDuration10 = duration_cast<nanoseconds>(timeStop10 - timeStart10);
     // cout << "Tempo decorrido: " << timeDuration10.count() << " nanosegundos." << endl;
