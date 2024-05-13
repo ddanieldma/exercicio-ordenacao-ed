@@ -16,6 +16,31 @@ using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
 using std::chrono::nanoseconds;
 
+// Transformando processo de medir tempo em função.
+// Aqui será utilizado um ponteiro para função para que possamos usar qualquer
+// método de ordenação e registrar seu tempo.
+void registraTempo(ofstream &file, Node* head, void (*func)(Node**), bool endLine){
+    // Calcula o tempo gasto pelo algorítmo de ordenação, imprime no terminal
+    // e armazena esse tempo no arquivo especificado.
+
+    auto timeStart = high_resolution_clock::now();
+    // Chamando função de ordenação da DLL.
+    func(&head);
+    auto timeEnd = high_resolution_clock::now();
+    auto timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
+    int iCountTimeTaken = timeTaken.count();
+
+    // Colocando tempo de execução no csv.
+    if (endLine)
+        file << iCountTimeTaken << endl;
+    else
+        file << iCountTimeTaken << ",";
+    
+    cout << "Tempo de execucao: " << iCountTimeTaken << " nanossegundos." << endl;
+
+    return;
+}
+
 
 int main(){
 
@@ -56,46 +81,21 @@ int main(){
 
         // Bubble Sort.
         cout << "Ordenando com Bubble Sort" << endl;
-
-        timeStart = high_resolution_clock::now();
-        bubbleSort(&head);
-        timeEnd = high_resolution_clock::now();
-        timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
-        // Colocando tempo de execução no csv.
-        file << timeTaken.count() << ",";
-        cout << "Tempo de execucao: " << timeTaken.count() << " nanossegundos." << endl;
+        registraTempo(file, head, &bubbleSort, false);
 
         // Optimized Bubble Sort.
         cout << "Ordenando com Optimized Bubble Sort" << endl;
+        registraTempo(file, head, &optimizedBubbleSort, false);
 
-        timeStart = high_resolution_clock::now();
-        optimizedBubbleSort(&head);
-        timeEnd = high_resolution_clock::now();
-
-        timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
-        file << timeTaken.count() << ",";
-        cout << "Tempo de execucao: " << timeTaken.count() << " nanossegundos." << endl;
 
         // Selection Sort.
         cout << "Ordenando com Selection Sort" << endl;
+        registraTempo(file, head, &selectionSort, false);
 
-        timeStart = high_resolution_clock::now();
-        selectionSort(&head);
-        timeEnd = high_resolution_clock::now();
-        timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
-        file << timeTaken.count() << ",";
-        cout << "Tempo de execucao: " << timeTaken.count() << " nanossegundos." << endl;
 
         // Optimized Selection Sort.
         cout << "Ordenando com Optimized Selection Sort" << endl;
-
-        timeStart = high_resolution_clock::now();
-        optimizedSelectionSort(&head);
-        timeEnd = high_resolution_clock::now();
-        timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
-        file << timeTaken.count() << endl;
-        cout << "Tempo de execucao: " << timeTaken.count() << " nanossegundos." << endl;
-
+        registraTempo(file, head, &optimizedSelectionSort, true);
     }
     
     return 0;
