@@ -3,6 +3,7 @@
 #include "doubly-linked-list.h"
 #include "bubble_sort.h"
 #include "selection-sort.h"
+#include "insertion-sort.h"
 #include <chrono>
 #include <time.h>
 #include <fstream>
@@ -59,7 +60,7 @@ int main(){
     // Criando arquivo.
     file.open("tempos.csv");
     // Colocando cabeçalhos.
-    file<<"bs,obs,ss,oss"<<endl;
+    file<<"bs,obs,ss,oss,is"<<endl;
 
     for (int i = 0; i < 10; i++){
         // Colocando cabeçalhos.
@@ -95,7 +96,12 @@ int main(){
 
         // Optimized Selection Sort.
         cout << "Ordenando com Optimized Selection Sort" << endl;
-        registraTempo(file, head, &optimizedSelectionSort, true);
+        registraTempo(file, head, &optimizedSelectionSort, false);
+
+        // Insertion Sort.
+        // Optimized Selection Sort.
+        cout << "Ordenando com Insertion Sort" << endl;
+        registraTempo(file, head, &insertionSort, true);
     }
     
     return 0;
