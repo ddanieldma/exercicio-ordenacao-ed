@@ -42,17 +42,41 @@ void registraTempo(ofstream &file, Node* head, void (*func)(Node**), bool endLin
     return;
 }
 
+Node* criaLista(int iSize, int iOffset, int iRange){
+    // Criando nova lista.
+    Node* head = nullptr;
+
+    // Setando gerador de números aleatórios com seed dada pelo tempo atual, de forma que cada
+    // nova lista é completamente diferente.
+    srand((unsigned) time(NULL));
+    int iRandom;
+    
+    for (int j = 0; j < 10000; j++) {
+        // Gera número aleatório entre 1 e 100
+        iRandom = iOffset + (rand() % (iRange + 1 - iOffset));
+        insertEnd(&head, iRandom);
+    }   
+
+    return head;
+}
+
 
 int main(){
-
-    // Criar 10 listas com 10.000 elementos e ordená-las usando cada um dos algorítmos.
-    
-    int iRandom;
+    // Criar 100 listas com 10.000 elementos e ordená-las usando cada um dos algorítmos.
     
     // Declarando variáveis antes para melhoria de desempenho.
     auto timeStart = high_resolution_clock::now();
     auto timeEnd = high_resolution_clock::now();
     auto timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
+
+    // Configurações das listas
+    int iSize = 10000;
+    int iOffset = 1;
+    int iRange = 100;
+    int iNumberOfLists = 100;
+
+    // Ponteiro que conterá as listas.
+    Node* head = criaLista(iSize, iOffset, iRange);
     
     // Operações de arquivo.
     // Criando variável que permite manipulação de arquivos no modo de escrita.
@@ -62,45 +86,31 @@ int main(){
     // Colocando cabeçalhos.
     file<<"bs,obs,ss,oss,is"<<endl;
 
-    for (int i = 0; i < 10; i++){
-        // Colocando cabeçalhos.
-        
-        // Criando nova lista.
-        Node* head = nullptr;
-
-        // Setando gerador de números aleatórios com seed dada pelo tempo atual, de forma que cada
-        // nova lista é completamente diferente.
-        srand((unsigned) time(NULL));
-
-        for (int j = 0; j < 10000; j++) {
-            // Gera número aleatório entre 1 e 100
-            iRandom = rand() % 100 + 1;
-            insertEnd(&head, iRandom);
-            cout << iRandom << endl;
-        }
-
-        cout << "Lista " << i + 1 << " criada." << endl;
+    for (int i = 0; i < iNumberOfLists; i++){
+        cout << i + 1 << " sequência de listas." << endl;
 
         // Bubble Sort.
+        head = criaLista(iSize, iOffset, iRange);
         cout << "Ordenando com Bubble Sort" << endl;
         registraTempo(file, head, &bubbleSort, false);
 
         // Optimized Bubble Sort.
+        head = criaLista(iSize, iOffset, iRange);
         cout << "Ordenando com Optimized Bubble Sort" << endl;
         registraTempo(file, head, &optimizedBubbleSort, false);
 
-
         // Selection Sort.
+        head = criaLista(iSize, iOffset, iRange);
         cout << "Ordenando com Selection Sort" << endl;
         registraTempo(file, head, &selectionSort, false);
 
-
         // Optimized Selection Sort.
+        head = criaLista(iSize, iOffset, iRange);
         cout << "Ordenando com Optimized Selection Sort" << endl;
         registraTempo(file, head, &optimizedSelectionSort, false);
 
         // Insertion Sort.
-        // Optimized Selection Sort.
+        head = criaLista(iSize, iOffset, iRange);
         cout << "Ordenando com Insertion Sort" << endl;
         registraTempo(file, head, &insertionSort, true);
     }
