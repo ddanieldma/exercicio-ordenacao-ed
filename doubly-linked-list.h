@@ -23,10 +23,12 @@ void insertAfter(Node*, int);
 void deleteNode(Node**, Node*);
 void insertBefore(Node**, Node*, int);
 Node *searchNodeByValue(Node**, int);
+Node *getLastNode(Node**);
 void DeleteNodeByValue(Node**, int);
 int countElementsList(Node*);
 int getGreatestList(Node**);
-Node *createListSize(Node);
+Node *createListSize(int);
+int getListSize(Node**);
 
 
 Node *createNode(int iPayload){
@@ -219,6 +221,20 @@ Node *searchNodeByValue(Node **head, int iValue){
     return nullptr;
 }
 
+Node* getLastNode(Node** head){
+    if(*head == nullptr){
+        cout << "Lista vazia" << endl;
+
+        return nullptr;
+    }
+
+    Node* last = *head;
+    while(last->ptrNext != nullptr)
+        last = last->ptrNext;
+
+    return last;
+}
+
 void DeleteNodeByValue(Node** head, int iValue){
     // Deleta um nó da lista pelo valor nele contido.
 
@@ -285,4 +301,16 @@ Node* createListSize(int iSize){
     }
 
     return head;
+}
+
+int getListSize(Node** head){
+    Node* current = *head;
+    int iCount = 1;
+
+    while(current->ptrNext != nullptr){
+        current = current->ptrNext;
+        iCount++;
+    }
+
+    return iCount;
 }

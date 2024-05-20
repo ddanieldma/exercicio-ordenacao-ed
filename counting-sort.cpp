@@ -25,18 +25,6 @@ int greatestArr(int* arri, int iSize){
     return iGreatest;
 }
 
-int countListSize(Node** head){
-    Node* current = *head;
-    int iCount = 1;
-
-    while(current->ptrNext != nullptr){
-        current = current->ptrNext;
-        iCount++;
-    }
-
-    return iCount;
-}
-
 int ocurrencesElement(Node** head, int iValue){
     Node* current = *head;
     int iCount = 0;
@@ -91,7 +79,7 @@ void countingSort(Node** head){
 
     Node *countList = createListSize(iGreatest + 1);
 
-    cout << "Tamanho da nova lista: " << countListSize(&countList) << endl;
+    cout << "Tamanho da nova lista: " << getListSize(&countList) << endl;
 
     int iElement = 5;
     cout << "Ocorrencias do numero " << iElement << ": " << ocurrencesElement(head, iElement) << endl;
@@ -116,6 +104,8 @@ void countingSort(Node** head){
             current = current->ptrNext;
             continue;
         }
+        
+        current->iPayload = current->iPayload + current->ptrPrev->iPayload;
 
         // Node* backward = current->ptrPrev;
         // while (backward != nullptr){
@@ -145,7 +135,33 @@ void countingSort(Node** head){
     //     current = current->ptrNext;
     // }
 
-    displayList(countList);
+    // Criando lista que será a versão ordenada.
+    Node* outputList = createListSize(getListSize(head));
+
+    // Iterando a partir do final da lista inicial.
+    current = getLastNode(head);
+
+    while(current != nullptr){
+        int iCurrentValue = current->iPayload;
+        
+        // Índice na lista de saída é o valor na lista de contagem de índice
+        // dado pelo valor atual da lista de entrada -1.
+        // Variável para fazer operações nas listas com índices.
+        Node* indexNode = getNodeByIndex(&countList, iCurrentValue);
+        int iIndexOutput = indexNode->iPayload - 1;
+
+        // Colocando valor na lista de saída.
+        indexNode = getNodeByIndex(&outputList, iIndexOutput);
+        indexNode->iPayload = iCurrentValue;
+
+        // Atualizando lista de contagem.
+        indexNode = getNodeByIndex(&countList, iCurrentValue);
+        indexNode->iPayload--;
+
+        current = current->ptrPrev;
+    }
+
+    *head = outputList;
 }
 
 
@@ -161,11 +177,13 @@ int main(){
     insertEnd(&head, 0);
     insertEnd(&head, 3);
 
+    cout << "Lista sem ordenação: " << endl;
     displayList(head);
 
     countingSort(&head);
 
-    // displayList(head);
+    cout << "Lista ordenada: " << endl;
+    displayList(head);
 
     return 0;
 }
