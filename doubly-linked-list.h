@@ -25,6 +25,8 @@ void insertBefore(Node**, Node*, int);
 Node *searchNodeByValue(Node**, int);
 void DeleteNodeByValue(Node**, int);
 int countElementsList(Node*);
+int getGreatestList(Node**);
+Node *createListSize(Node);
 
 
 Node *createNode(int iPayload){
@@ -252,4 +254,35 @@ int countElementsList(Node* node){
     }
 
     return iCount;
+}
+
+int getGreatestList(Node** head){
+    if(*head == nullptr){
+        cout << "Lista vazia" << endl;
+        return -1;
+    }
+    
+    Node* current = *head;
+    int iGreatest = current->iPayload;
+
+    while(current->ptrNext != nullptr){
+        if(current->iPayload > iGreatest)
+            iGreatest = current->iPayload;
+
+        current = current->ptrNext;
+    }
+
+    return iGreatest;
+}
+
+Node* createListSize(int iSize){
+    // Cria lista do tamanho especificado toda inicializada com 0's.
+    
+    Node* head = nullptr;
+
+    for (int i = 0; i < iSize; i++){
+        insertEnd(&head, 0);
+    }
+
+    return head;
 }
