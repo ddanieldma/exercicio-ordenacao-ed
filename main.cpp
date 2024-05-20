@@ -72,10 +72,11 @@ int main(){
         // nova lista é completamente diferente.
         srand((unsigned) time(NULL));
 
-        for (int j = 0; j < 10000; j++){
-            // Gerando número aleatório entre 0 e 10000.
-            iRandom = rand() % 10000;
+        for (int j = 0; j < 10000; j++) {
+            // Gera número aleatório entre 1 e 100
+            iRandom = rand() % 100 + 1;
             insertEnd(&head, iRandom);
+            cout << iRandom << endl;
         }
 
         cout << "Lista " << i + 1 << " criada." << endl;
