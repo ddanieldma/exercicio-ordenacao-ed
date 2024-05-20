@@ -62,7 +62,7 @@ int main(){
     // Colocando cabeçalhos.
     file<<"bs,obs,ss,oss,is"<<endl;
 
-    for (int i = 0; i < 10; i++){
+    for (int i = 0; i < 100; i++){
         // Colocando cabeçalhos.
         
         // Criando nova lista.
@@ -76,7 +76,6 @@ int main(){
             // Gera número aleatório entre 1 e 100
             iRandom = rand() % 100 + 1;
             insertEnd(&head, iRandom);
-            cout << iRandom << endl;
         }
 
         cout << "Lista " << i + 1 << " criada." << endl;
