@@ -2,8 +2,9 @@ int getGreatestList(Node**);
 Node *createListSize(int);
 Node* getNodeByIndex(Node**, int);
 int ocurrencesElement(Node**, int);
-int countElementsList(Node*);
 int getListSize(Node**);
+int countElementsList(Node*);
+void countingSort(Node**);
 
 // int main(){
 //     Node* head = nullptr;
@@ -28,18 +29,35 @@ int getListSize(Node**);
 //     return 0;
 // }
 
-int ocurrencesElement(Node** head, int iValue){
-    Node* current = *head;
-    int iCount = 0;
+int getGreatestList(Node** head){
+    if(*head == nullptr){
+        cout << "Lista vazia" << endl;
+        return -1;
+    }
 
-    while (current != nullptr){
-        if (current->iPayload == iValue)
-            iCount++;
+    Node* current = *head;
+    int iGreatest = current->iPayload;
+
+    while(current != nullptr){
+        if(current->iPayload > iGreatest)
+            iGreatest = current->iPayload;
 
         current = current->ptrNext;
     }
 
-    return iCount;
+    return iGreatest;
+}
+
+Node* createListSize(int iSize){
+    // Cria lista do tamanho especificado toda inicializada com 0's.
+
+    Node* head = nullptr;
+
+    for (int i = 0; i < iSize; i++){
+        insertEnd(&head, 0);
+    }
+
+    return head;
 }
 
 Node* getNodeByIndex(Node** head, int iIndex){
@@ -66,6 +84,57 @@ Node* getNodeByIndex(Node** head, int iIndex){
     cout << "Index inválido" << endl;
 
     return nullptr;
+}
+
+int ocurrencesElement(Node** head, int iValue){
+    Node* current = *head;
+    int iCount = 0;
+
+    while (current != nullptr){
+        if (current->iPayload == iValue)
+            iCount++;
+
+        current = current->ptrNext;
+    }
+
+    return iCount;
+}
+
+int getListSize(Node** head){
+    Node* current = *head;
+    int iCount = 1;
+
+    while(current != nullptr){
+        current = current->ptrNext;
+        iCount++;
+    }
+
+    return iCount;
+}
+
+
+int countElementsList(Node* node){
+    // Se o nó passado é apenas um ponteiro nulo.
+    if (node == nullptr){
+        cout << "Lista vazia" << endl;
+        return 0;
+    }
+
+    // Se o nó anterior não foi o nullptr (apenas no começo da lista).
+    if (node->ptrPrev != nullptr){
+        cout << "Meio ou Fim da Lista" << endl;
+        return -1;
+    }
+
+    Node* temp = node;
+    int iCount = 0;
+
+    while(temp != nullptr){
+        iCount++;
+        temp = temp->ptrNext;
+    }
+
+    return iCount;
 }
 
 void countingSort(Node** head){
@@ -129,7 +198,7 @@ void countingSort(Node** head){
 
     // Liberando memória da lista de input e da lista de contagem temporária.
     deleteList(head);
-    deleteList(*countList);
+    deleteList(&countList);
 
     // Setando a head para a nova lista, agora ordenada.
     *head = outputList;
