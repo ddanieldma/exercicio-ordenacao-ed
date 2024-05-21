@@ -1,9 +1,10 @@
 #include <iostream>
 #include "utils.h"
 #include "doubly-linked-list.h"
-#include "bubble_sort.h"
-#include "selection-sort.h"
-#include "insertion-sort.h"
+#include "sortings/bubble_sort.h"
+#include "sortings/selection-sort.h"
+#include "sortings/insertion-sort.h"
+#include "sortings/counting-sort.h"
 #include <chrono>
 #include <time.h>
 #include <fstream>
@@ -92,27 +93,32 @@ int main(){
         // Bubble Sort.
         head = criaLista(iSize, iOffset, iRange);
         cout << "Ordenando com Bubble Sort" << endl;
-        registraTempo(file, head, &bubbleSort, false);
+        registraTempo(file, head, BubbleSort::bubbleSort, false);
 
         // Optimized Bubble Sort.
         head = criaLista(iSize, iOffset, iRange);
         cout << "Ordenando com Optimized Bubble Sort" << endl;
-        registraTempo(file, head, &optimizedBubbleSort, false);
+        registraTempo(file, head, BubbleSort::optimizedBubbleSort, false);
 
         // Selection Sort.
         head = criaLista(iSize, iOffset, iRange);
         cout << "Ordenando com Selection Sort" << endl;
-        registraTempo(file, head, &selectionSort, false);
+        registraTempo(file, head, SelectionSort::selectionSort, false);
 
         // Optimized Selection Sort.
         head = criaLista(iSize, iOffset, iRange);
         cout << "Ordenando com Optimized Selection Sort" << endl;
-        registraTempo(file, head, &optimizedSelectionSort, false);
+        registraTempo(file, head, SelectionSort::optimizedSelectionSort, false);
 
         // Insertion Sort.
         head = criaLista(iSize, iOffset, iRange);
         cout << "Ordenando com Insertion Sort" << endl;
-        registraTempo(file, head, &insertionSort, true);
+        registraTempo(file, head, InsertionSort::insertionSort, true);
+
+        // Couting Sort.
+        head = criaLista(iSize, iOffset, iRange);
+        cout << "Ordenando com Counting Sort" << endl;
+        registraTempo(file, head, CountingSort::countingSort, true);
     }
     
     return 0;
