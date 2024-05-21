@@ -16,19 +16,17 @@ typedef struct Node{
 
 void iguais();
 Node *createNode(int);
+bool emptyList(Node**);
 void insertFront(Node **, int);
+Node *getLastNode(Node**);
 void insertEnd(Node **, int);
 void displayList(Node *);
 void insertAfter(Node*, int);
 void deleteNode(Node**, Node*);
 void insertBefore(Node**, Node*, int);
 Node *searchNodeByValue(Node**, int);
-Node *getLastNode(Node**);
-void DeleteNodeByValue(Node**, int);
-int countElementsList(Node*);
-int getGreatestList(Node**);
-Node *createListSize(int);
-int getListSize(Node**);
+void deleteNodeByValue(Node**, int);
+void deleteList(Node**);
 
 
 Node *createNode(int iPayload){
@@ -40,6 +38,16 @@ Node *createNode(int iPayload){
     temp->ptrPrev = nullptr;
 
     return temp;
+}
+
+bool emptyList(Node ** head){
+    if (*head == nullptr){
+        cout << "Lista vazia" << endl;
+
+        return true;
+    }
+
+    return false;
 }
 
 void displayList(Node *node){
@@ -87,6 +95,18 @@ void insertFront(Node** head, int iPayload){
     return;
 }
 
+Node* getLastNode(Node** head){
+    if(emptyList(head)){
+        return nullptr;
+    }
+
+    Node* last = *head;
+    while(last->ptrNext != nullptr)
+        last = last->ptrNext;
+
+    return last;
+}
+
 void insertEnd(Node** head, int iPayload){
     Node *newNode = createNode(iPayload);
 
@@ -95,13 +115,10 @@ void insertEnd(Node** head, int iPayload){
         return;
     }
 
-    Node *temp = (*head);
+    Node *last = getLastNode(head);
 
-    while (temp->ptrNext != nullptr)
-        temp = temp->ptrNext;
-
-    newNode->ptrPrev = temp; 
-    temp->ptrNext = newNode;
+    newNode->ptrPrev = last; 
+    last->ptrNext = newNode;
 }
 
 void insertAfter(Node* ptrLocation, int iPayload){
@@ -221,21 +238,7 @@ Node *searchNodeByValue(Node **head, int iValue){
     return nullptr;
 }
 
-Node* getLastNode(Node** head){
-    if(*head == nullptr){
-        cout << "Lista vazia" << endl;
-
-        return nullptr;
-    }
-
-    Node* last = *head;
-    while(last->ptrNext != nullptr)
-        last = last->ptrNext;
-
-    return last;
-}
-
-void DeleteNodeByValue(Node** head, int iValue){
+void deleteNodeByValue(Node** head, int iValue){
     // Deleta um nó da lista pelo valor nele contido.
 
     // Não precisamos nos preocupar com as verificações e casos especiais
@@ -248,69 +251,22 @@ void DeleteNodeByValue(Node** head, int iValue){
     return;
 }
 
-int countElementsList(Node* node){
-    // Se o nó passado é apenas um ponteiro nulo.
-    if (node == nullptr){
-        cout << "Lista vazia" << endl;
-        return 0;
-    }
-
-    // Se o nó anterior não foi o nullptr (apenas no começo da lista).
-    if (node->ptrPrev != nullptr){
-        cout << "Meio ou Fim da Lista" << endl;
-        return -1;
-    }
-
-    Node* temp = node;
-    int iCount = 0;
-
-    while(temp != nullptr){
-        iCount++;
-        temp = temp->ptrNext;
-    }
-
-    return iCount;
-}
-
-int getGreatestList(Node** head){
-    if(*head == nullptr){
-        cout << "Lista vazia" << endl;
-        return -1;
+void deleteList(Node** head){
+    if(emptyList(head)){
+        return;
     }
     
+    // Ponteiro que terá memória liberada à cada iteração.
+    Node* temp = nullptr;
+    // Ponteiro que vai anddar "na frente" pela lista.
     Node* current = *head;
-    int iGreatest = current->iPayload;
-
-    while(current->ptrNext != nullptr){
-        if(current->iPayload > iGreatest)
-            iGreatest = current->iPayload;
-
-        current = current->ptrNext;
-    }
-
-    return iGreatest;
-}
-
-Node* createListSize(int iSize){
-    // Cria lista do tamanho especificado toda inicializada com 0's.
     
-    Node* head = nullptr;
-
-    for (int i = 0; i < iSize; i++){
-        insertEnd(&head, 0);
-    }
-
-    return head;
-}
-
-int getListSize(Node** head){
-    Node* current = *head;
-    int iCount = 1;
-
-    while(current->ptrNext != nullptr){
+    while(current != nullptr){
+        temp = current;
         current = current->ptrNext;
-        iCount++;
+
+        free(temp);
     }
 
-    return iCount;
+    return;
 }

@@ -1,29 +1,32 @@
-#include <iostream>
-#include "doubly-linked-list.h"
+int getGreatestList(Node**);
+Node *createListSize(int);
+Node* getNodeByIndex(Node**, int);
+int ocurrencesElement(Node**, int);
+int countElementsList(Node*);
+int getListSize(Node**);
 
-using namespace std;
+// int main(){
+//     Node* head = nullptr;
 
-void displayArr(int* arri, int iSize){
-    cout << "Payload: ";
-    
-    for (int i = 0; i < iSize; i++){
-        cout << arri[i] << " ";
-    }
+//     insertEnd(&head, 2);
+//     insertEnd(&head, 5);
+//     insertEnd(&head, 3);
+//     insertEnd(&head, 0);
+//     insertEnd(&head, 2);
+//     insertEnd(&head, 3);
+//     insertEnd(&head, 0);
+//     insertEnd(&head, 3);
 
-    cout << endl;
-}
+//     cout << "Lista sem ordenação: " << endl;
+//     displayList(head);
 
-int greatestArr(int* arri, int iSize){
-    // Greater is the first.
-    int iGreatest = arri[0];
+//     countingSort(&head);
 
-    for (int i = 0; i < iSize; i++){
-        if(arri[i] > iGreatest)
-            iGreatest = arri[i];
-    } 
+//     cout << "Lista ordenada: " << endl;
+//     displayList(head);
 
-    return iGreatest;
-}
+//     return 0;
+// }
 
 int ocurrencesElement(Node** head, int iValue){
     Node* current = *head;
@@ -66,74 +69,37 @@ Node* getNodeByIndex(Node** head, int iIndex){
 }
 
 void countingSort(Node** head){
-    // 1. Encontra maior elemento no input array.
-    // 2. Cria count array.
-    
-    // 3. Seta count array
-    // O index é o número e o valor o número de ocorrências.
-
-    // 4. executa os passos voltando no input array.
-
+    // Pegando o maior elemento na lista.
     int iGreatest = getGreatestList(head);
-    cout << "Maior elemento da lista: " << iGreatest << endl;
 
+    // Criando lista de contagem de tamanho <maior elemento> + 1
     Node *countList = createListSize(iGreatest + 1);
-
-    cout << "Tamanho da nova lista: " << getListSize(&countList) << endl;
-
-    int iElement = 5;
-    cout << "Ocorrencias do numero " << iElement << ": " << ocurrencesElement(head, iElement) << endl;
-
-    int iIndex = 2;
-    Node* nodeIndex = getNodeByIndex(head, iIndex);
-    cout << "Elemento no index " << iIndex << ": " << nodeIndex->iPayload << endl;
 
     // Setando count list
     for (int i = 0; i < (iGreatest + 1); i++){
+        // Na lista de contagem, cada posição/índice armazena o número de ocorrências
+        // na lista de input do número de valor igual àquela posição.
+
         // Percorreando lista como se fosse um array.
         Node* currentCountNode = getNodeByIndex(&countList, i);
+        // Armzenando o número de ocorrências do elemento na lista de input.
         currentCountNode->iPayload = ocurrencesElement(head, i);
     }
 
-    displayList(countList);
-    
     Node* current = countList;
     while(current != nullptr){
-        // Se estivermos no primerio elemento da lista.
+        // Se estiver no primerio elemento da lista.
         if(current->ptrPrev == nullptr){
             current = current->ptrNext;
             continue;
         }
         
+        // O valor de cada nó (com exceção do primeiro) é o valor dele mais o valor
+        // do nó anterior
         current->iPayload = current->iPayload + current->ptrPrev->iPayload;
-
-        // Node* backward = current->ptrPrev;
-        // while (backward != nullptr){
-        //     current->iPayload = current->iPayload + backward->iPayload;
-
-        //     backward = backward->ptrPrev;
-        // }
-
 
         current = current->ptrNext;
     }
-    // while(current != nullptr){
-    //     // Se estivermos no primerio elemento da lista.
-    //     if(current->ptrPrev == nullptr){
-    //         current = current->ptrNext;
-    //         continue;
-    //     }
-
-    //     Node* backward = current->ptrPrev;
-    //     while (backward != nullptr){
-    //         current->iPayload = current->iPayload + backward->iPayload;
-
-    //         backward = backward->ptrPrev;
-    //     }
-
-
-    //     current = current->ptrNext;
-    // }
 
     // Criando lista que será a versão ordenada.
     Node* outputList = createListSize(getListSize(head));
@@ -161,29 +127,12 @@ void countingSort(Node** head){
         current = current->ptrPrev;
     }
 
+    // Liberando memória da lista de input e da lista de contagem temporária.
+    deleteList(head);
+    deleteList(*countList);
+
+    // Setando a head para a nova lista, agora ordenada.
     *head = outputList;
-}
 
-
-int main(){
-    Node* head = nullptr;
-
-    insertEnd(&head, 2);
-    insertEnd(&head, 5);
-    insertEnd(&head, 3);
-    insertEnd(&head, 0);
-    insertEnd(&head, 2);
-    insertEnd(&head, 3);
-    insertEnd(&head, 0);
-    insertEnd(&head, 3);
-
-    cout << "Lista sem ordenação: " << endl;
-    displayList(head);
-
-    countingSort(&head);
-
-    cout << "Lista ordenada: " << endl;
-    displayList(head);
-
-    return 0;
+    return;
 }
