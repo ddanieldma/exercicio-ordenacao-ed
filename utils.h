@@ -6,8 +6,9 @@ void iguais(){
     cout << "=====================================" << endl;
 }
 
-void swapNodesValues(int& iVal1, int& iVal2){
-	int iTemp = iVal1;
-	iVal1 = iVal2;
-	iVal2 = iTemp;
+template <typename T>
+void swapNodesValues(T& iVal1, T& iVal2){
+    T iTemp = iVal1;
+    iVal1 = iVal2;
+    iVal2 = iTemp;
 }

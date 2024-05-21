@@ -1,55 +1,19 @@
 namespace BubbleSort
 {
-    void swapNodes(Node **, Node *, Node *);
-    void optimizedBubbleSort(Node **);
-    void bubbleSort(Node **);
+    template <typename T>
+    void swapNodes(Node<T> **, Node<T> *, Node<T> *);
 
-    // int main()
-    // {
-    //     srand(time(NULL));
-    //     Node* head = nullptr;
+    template <typename T>
+    void optimizedBubbleSort(Node<T> **);
 
-    //     // normal
-    //     for (int j = 0; j < 100; j++)
-    //     {
-    //         head = nullptr;
+    template <typename T>
+    void bubbleSort(Node<T> **);
 
-    //         for (int i = 0; i < 10000; ++i) {
-    //             insertEnd(&head, rand() % 10000); 
-    //         }
-
-    //         auto timeStart10 = high_resolution_clock::now();
-    //         bubbleSort(&head);
-    //         auto timeStop10 = high_resolution_clock::now();
-
-    //         auto timeDuration10 = duration_cast<nanoseconds>(timeStop10 - timeStart10);
-    //         cout << "Tempo decorrido: " << timeDuration10.count() << " nanosegundos." << endl;
-    //     }
-
-    //     // otimizado
-    //     for (int j = 0; j < 100; j++)
-    //     {
-    //         head = nullptr;
-
-    //         for (int i = 0; i < 10000; ++i) {
-    //             insertEnd(&head, rand() % 10000); 
-    //         }
-
-    //         auto timeStart10 = high_resolution_clock::now();
-    //         optimizedBubbleSort(&head);
-    //         auto timeStop10 = high_resolution_clock::now();
-
-    //         auto timeDuration10 = duration_cast<nanoseconds>(timeStop10 - timeStart10);
-    //         cout << "Tempo decorrido: " << timeDuration10.count() << " nanosegundos." << endl;
-    //     }
-
-    //     return 0;
-    // }; 
-
-    void swapNodes(Node **head, Node *node1, Node *node2) {
+    template <typename T>
+    void swapNodes(Node<T> **head, Node<T> *node1, Node<T> *node2) {
         if (node1 == node2) return;
 
-        if (node1->ptrNext == node2) //caso onde os nós estão adjacentes
+        if (node1->ptrNext == node2) // caso onde os nós estão adjacentes
         {
             node1->ptrNext = node2->ptrNext;
 
@@ -66,8 +30,8 @@ namespace BubbleSort
         } 
         else 
         { 
-            Node *tempNext = node1->ptrNext;
-            Node *tempPrev = node1->ptrPrev;
+            Node<T> *tempNext = node1->ptrNext;
+            Node<T> *tempPrev = node1->ptrPrev;
 
             node1->ptrNext = node2->ptrNext;
 
@@ -95,22 +59,23 @@ namespace BubbleSort
         else if (*head == node2) *head = node1;
     }
 
-    void optimizedBubbleSort(Node **head) 
+    template <typename T>
+    void optimizedBubbleSort(Node<T> **head) 
     {
         if (*head == nullptr){
             return;
         }
 
-        Node *end = nullptr; 
+        Node<T> *end = nullptr; 
         bool swapped;
 
         do {
             swapped = false;
-            Node *current = *head;
-            Node *previous = nullptr; 
+            Node<T> *current = *head;
+            Node<T> *previous = nullptr; 
 
             while (current->ptrNext != end) {
-                Node *next = current->ptrNext;
+                Node<T> *next = current->ptrNext;
                 if (current->iPayload > next->iPayload) {
                     swapNodes(head, current, next);
                     swapped = true;
@@ -121,15 +86,17 @@ namespace BubbleSort
             end = current; 
         } while (swapped);
     }
-    void bubbleSort(Node **head)
+
+    template <typename T>
+    void bubbleSort(Node<T> **head)
     {
         if (*head == nullptr){
             return;
         }
 
         bool swapped;
-        Node *temp1 = nullptr;
-        Node *temp2 = nullptr;
+        Node<T> *temp1 = nullptr;
+        Node<T> *temp2 = nullptr;
 
         do {
             swapped = false;

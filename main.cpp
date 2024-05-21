@@ -21,7 +21,9 @@ using std::chrono::nanoseconds;
 // Transformando processo de medir tempo em função.
 // Aqui será utilizado um ponteiro para função para que possamos usar qualquer
 // método de ordenação e registrar seu tempo.
-void registraTempo(ofstream &file, Node* head, void (*func)(Node**), bool endLine){
+
+template <typename T>
+void registraTempo(ofstream &file, Node<T>* head, void (*func)(Node<T>**), bool endLine){
     // Calcula o tempo gasto pelo algorítmo de ordenação, imprime no terminal
     // e armazena esse tempo no arquivo especificado.
 
@@ -43,17 +45,18 @@ void registraTempo(ofstream &file, Node* head, void (*func)(Node**), bool endLin
     return;
 }
 
-Node* criaLista(int iSize, int iOffset, int iRange){
+template <typename T>
+Node<T>* criaLista(int iSize, int iOffset, int iRange){
     // Criando nova lista.
-    Node* head = nullptr;
+    Node<T>* head = nullptr;
 
     // Setando gerador de números aleatórios com seed dada pelo tempo atual, de forma que cada
     // nova lista é completamente diferente.
     srand((unsigned) time(NULL));
-    int iRandom;
+    T iRandom;
     
-    for (int j = 0; j < 10000; j++) {
-        // Gera número aleatório entre 1 e 100
+    for (int j = 0; j < iSize; j++) {
+        // Gera número aleatório entre iOffset e iRange
         iRandom = iOffset + (rand() % (iRange + 1 - iOffset));
         insertEnd(&head, iRandom);
     }   
@@ -77,7 +80,7 @@ int main(){
     int iNumberOfLists = 100;
 
     // Ponteiro que conterá as listas.
-    Node* head = criaLista(iSize, iOffset, iRange);
+    Node<int>* head = criaLista<int>(iSize, iOffset, iRange);
     
     // Operações de arquivo.
     // Criando variável que permite manipulação de arquivos no modo de escrita.
@@ -85,41 +88,41 @@ int main(){
     // Criando arquivo.
     file.open("tempos.csv");
     // Colocando cabeçalhos.
-    file<<"bs,obs,ss,oss,is"<<endl;
+    file << "bs,obs,ss,oss,is,cs" << endl;
 
     for (int i = 0; i < iNumberOfLists; i++){
         cout << i + 1 << " sequência de listas." << endl;
 
         // Bubble Sort.
-        head = criaLista(iSize, iOffset, iRange);
+        head = criaLista<int>(iSize, iOffset, iRange);
         cout << "Ordenando com Bubble Sort" << endl;
-        registraTempo(file, head, BubbleSort::bubbleSort, false);
+        registraTempo(file, head, BubbleSort::bubbleSort<int>, false);
 
         // Optimized Bubble Sort.
-        head = criaLista(iSize, iOffset, iRange);
+        head = criaLista<int>(iSize, iOffset, iRange);
         cout << "Ordenando com Optimized Bubble Sort" << endl;
-        registraTempo(file, head, BubbleSort::optimizedBubbleSort, false);
+        registraTempo(file, head, BubbleSort::optimizedBubbleSort<int>, false);
 
         // Selection Sort.
-        head = criaLista(iSize, iOffset, iRange);
+        head = criaLista<int>(iSize, iOffset, iRange);
         cout << "Ordenando com Selection Sort" << endl;
-        registraTempo(file, head, SelectionSort::selectionSort, false);
+        registraTempo(file, head, SelectionSort::selectionSort<int>, false);
 
         // Optimized Selection Sort.
-        head = criaLista(iSize, iOffset, iRange);
+        head = criaLista<int>(iSize, iOffset, iRange);
         cout << "Ordenando com Optimized Selection Sort" << endl;
-        registraTempo(file, head, SelectionSort::optimizedSelectionSort, false);
+        registraTempo(file, head, SelectionSort::optimizedSelectionSort<int>, false);
 
         // Insertion Sort.
-        head = criaLista(iSize, iOffset, iRange);
+        head = criaLista<int>(iSize, iOffset, iRange);
         cout << "Ordenando com Insertion Sort" << endl;
-        registraTempo(file, head, InsertionSort::insertionSort, true);
+        registraTempo(file, head, InsertionSort::insertionSort<int>, false);
 
-        // Couting Sort.
-        head = criaLista(iSize, iOffset, iRange);
+        // Counting Sort.
+        head = criaLista<int>(iSize, iOffset, iRange);
         cout << "Ordenando com Counting Sort" << endl;
-        registraTempo(file, head, CountingSort::countingSort, true);
+        registraTempo(file, head, CountingSort::countingSort<int>, true);
     }
-    
+
     return 0;
-}
+}   

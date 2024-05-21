@@ -1,38 +1,41 @@
 namespace SelectionSort
 {
-	void selectionSort(Node**);
-	void optimizedSelectionSort(Node**);
+	template<typename T>
+	void selectionSort(Node<T>**);
+
+	template<typename T>
+	void optimizedSelectionSort(Node<T>**);
 	
-	void selectionSort(Node** head){
-		if(*head == nullptr){
+	template<typename T>
+	void selectionSort(Node<T>** head) {
+		if (*head == nullptr) {
 			cout << "Lista vazia" << endl;
-			
 			return;
 		}
-		
-		bool bSwapped;
-		Node* outerLoop = nullptr;
-		Node* innerLoop = nullptr;
 
-		for (outerLoop = *head; outerLoop != nullptr; outerLoop = outerLoop->ptrNext){
-			for (innerLoop = outerLoop; innerLoop != nullptr; innerLoop = innerLoop->ptrNext){
-				if(innerLoop->iPayload < outerLoop->iPayload){
+		Node<T>* outerLoop = nullptr;
+		Node<T>* innerLoop = nullptr;
+
+		for (outerLoop = *head; outerLoop != nullptr; outerLoop = outerLoop->ptrNext) {
+			for (innerLoop = outerLoop; innerLoop != nullptr; innerLoop = innerLoop->ptrNext) {
+				if (innerLoop->iPayload < outerLoop->iPayload) {
 					swapNodesValues(innerLoop->iPayload, outerLoop->iPayload);
 				}
 			}
 		}
 	}
 
-	void optimizedSelectionSort(Node** head){
-		Node* minNode;
-		Node* outerLoop;
-		Node* innerLoop;
+	template<typename T>
+	void optimizedSelectionSort(Node<T>** head) {
+		Node<T>* minNode;
+		Node<T>* outerLoop;
+		Node<T>* innerLoop;
 
-		for (outerLoop = *head; outerLoop != nullptr; outerLoop = outerLoop->ptrNext){
+		for (outerLoop = *head; outerLoop != nullptr; outerLoop = outerLoop->ptrNext) {
 			minNode = outerLoop;
 
-			for (innerLoop = outerLoop; innerLoop != nullptr; innerLoop = innerLoop->ptrNext){
-				if(innerLoop->iPayload < outerLoop->iPayload){
+			for (innerLoop = outerLoop; innerLoop != nullptr; innerLoop = innerLoop->ptrNext) {
+				if (innerLoop->iPayload < minNode->iPayload) {
 					minNode = innerLoop;
 				}
 			}
