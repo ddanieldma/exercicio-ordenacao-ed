@@ -104,6 +104,7 @@ void registraTempoLista(ofstream &file, int size, int offset, int range, bool en
     return;
 }
 
+
 int main(){
     // Criar 100 listas com 10.000 elementos e ordená-las usando cada um dos algorítmos.
     
@@ -123,60 +124,74 @@ int main(){
     
     // Operações de arquivo.
     // Criando variável que permite manipulação de arquivos no modo de escrita.
-    ofstream file;
+    ofstream file1;
     // Criando arquivo.
-    file.open("tempos.csv");
+    file1.open("tempos.csv");
+    if (!file1) {
+        cerr << "Erro ao abrir o arquivo tempos.csv" << endl;
+        return 1;
+    }
     // Colocando cabeçalhos.
-    file << "bs,obs,ss,oss,is,cs,cl,ca" << endl;
+    file1 << "bs,obs,ss,oss,is,cs,cl,ca" << endl;
 
-    
     for (int i = 0; i < iNumberOfLists; i++){
         cout << i + 1 << " sequência de listas." << endl;
 
         // Bubble Sort.
         head = criaLista<int>(iSize, iOffset, iRange);
         cout << "Ordenando com Bubble Sort" << endl;
-        registraTempo(file, head, BubbleSort::bubbleSort<int>, false);
+        registraTempo(file1, head, BubbleSort::bubbleSort<int>, false);
 
         // Optimized Bubble Sort.
         head = criaLista<int>(iSize, iOffset, iRange);
         cout << "Ordenando com Optimized Bubble Sort" << endl;
-        registraTempo(file, head, BubbleSort::optimizedBubbleSort<int>, false);
+        registraTempo(file1, head, BubbleSort::optimizedBubbleSort<int>, false);
 
         // Selection Sort.
         head = criaLista<int>(iSize, iOffset, iRange);
         cout << "Ordenando com Selection Sort" << endl;
-        registraTempo(file, head, SelectionSort::selectionSort<int>, false);
+        registraTempo(file1, head, SelectionSort::selectionSort<int>, false);
 
         // Optimized Selection Sort.
         head = criaLista<int>(iSize, iOffset, iRange);
         cout << "Ordenando com Optimized Selection Sort" << endl;
-        registraTempo(file, head, SelectionSort::optimizedSelectionSort<int>, false);
+        registraTempo(file1, head, SelectionSort::optimizedSelectionSort<int>, false);
 
         // Insertion Sort.
         head = criaLista<int>(iSize, iOffset, iRange);
         cout << "Ordenando com Insertion Sort" << endl;
-        registraTempo(file, head, InsertionSort::insertionSort<int>, false);
+        registraTempo(file1, head, InsertionSort::insertionSort<int>, false);
 
         // Counting Sort.
         head = criaLista<int>(iSize, iOffset, iRange);
         cout << "Ordenando com Counting Sort" << endl;
-        registraTempo(file, head, CountingSort::countingSort<int>, true);
+        registraTempo(file1, head, CountingSort::countingSort<int>, true);
     }
 
-    file.open("tempos_comparacao.csv");
+    // Fechar o primeiro arquivo
+    file1.close();
+
+    // Criar o segundo arquivo
+    ofstream file2;
+    file2.open("tempos_comparacao.csv");
+    if (!file2) {
+        cerr << "Erro ao abrir o arquivo tempos_comparacao.csv" << endl;
+        return 1;
+    }
     
-    file << "criacao_arvore,criacao_lista" << endl;
+    file2 << "criacao_arvore,criacao_lista" << endl;
 
     for (int i = 0; i < iNumberOfLists; i++){
         cout << i + 1 << " sequência de comparações." << endl;
 
         // Medindo o tempo de criação da árvore binária.
-        registraTempoArvore<int>(file, iSize, iOffset, iRange, false);
+        registraTempoArvore<int>(file2, iSize, iOffset, iRange, false);
 
         // Medindo o tempo de criação da lista duplamente ligada.
-        registraTempoLista<int>(file, iSize, iOffset, iRange, true);
+        registraTempoLista<int>(file2, iSize, iOffset, iRange, true);
     }
 
+    file2.close();
+
     return 0;
-}   
+}
