@@ -1,135 +1,251 @@
-#include<iostream>
+#ifndef QUEUE_BT_H
+#define QUEUE_BT_H
+
+#include <iostream>
+#include <queue>
 
 using namespace std;
 
-typedef struct NodeTree{
-    int iPayload;
-
+template <typename T>
+struct NodeTree {
+    T iPayload;
     NodeTree* ptrLeft;
     NodeTree* ptrRight;
-} NodeTree;
+};
 
-typedef struct Node
-{
-    NodeTree* iPayload;
+template <typename T>
+struct Node {
+    T iPayload;
     Node* ptrNext;
-} Node;
+};
 
-typedef struct Queue
-{
-	Node* ptrFirst;
-}Queue;
+template <typename T>
+struct Queue {
+    Node<T>* ptrFirst;
+};
 
+template <typename T>
+Node<T>* createNode(T iValue);
 
-Node* createNode(NodeTree*);
-Queue* createQueue();
-bool emptyQueue(Queue*);
-void enQueue(Queue* const, NodeTree*);
-NodeTree* deQueue(Queue* queue);
-void showElements(Queue* const);
-void deleteQueue(Queue* const queue);
+template <typename T>
+Queue<T>* createQueue();
 
+template <typename T>
+bool emptyQueue(Queue<T>* queue);
 
-Node* createNode(NodeTree* iValue){
-	/*Cria nó da fila.*/
-	
-	// Alocando memória.
-	Node* temp = (Node*) malloc(sizeof(Node));
-	
-	// Inicializando nó.
-	temp->iPayload = iValue;
-	temp->ptrNext = nullptr;
+template <typename T>
+void enQueue(Queue<T>* const queue, T iValue);
 
-	return temp;
+template <typename T>
+T deQueue(Queue<T>* queue);
+
+template <typename T>
+void showElements(Queue<T>* const queue);
+
+template <typename T>
+void deleteQueue(Queue<T>* const queue);
+
+template <typename T>
+NodeTree<T>* createNodeTree(T iValue);
+
+template <typename T>
+NodeTree<T>* insertNodeTree(NodeTree<T>*, T);
+
+template <typename T>
+NodeTree<T>* lesserLeaf(NodeTree<T>*);
+
+template <typename T>
+NodeTree<T>* deleteNodeTree(NodeTree<T>*, T);
+
+template <typename T>
+void inOrderTraverse(NodeTree<T>* root);
+
+template <typename T>
+void preOrderTraverse(NodeTree<T>* root);
+
+template <typename T>
+void postOrderTraverse(NodeTree<T>* root);
+
+template <typename T>
+void bfsTraverse(NodeTree<T>* root);
+
+template <typename T>
+Node<T>* createNode(T iValue) {
+    /*Cria nó da fila.*/
+    Node<T>* temp = new Node<T>;
+    temp->iPayload = iValue;
+    temp->ptrNext = nullptr;
+    return temp;
 }
 
-Queue* createQueue(){
-	/*Cria fila.*/
-	
-	// Alocando memória.
-	Queue* temp = (Queue*) malloc(sizeof(Queue));
-	
-	// Inicializando estrutura.
-	temp->ptrFirst = nullptr;
-
-	return temp;
+template <typename T>
+Queue<T>* createQueue() {
+    /*Cria fila.*/
+    Queue<T>* temp = new Queue<T>;
+    temp->ptrFirst = nullptr;
+    return temp;
 }
 
-bool emptyQueue(Queue* queue){
-	/*Diz se a fila está vazia ou não.*/
-	
-	if(queue->ptrFirst == nullptr) return true;
-
-	return false;
+template <typename T>
+bool emptyQueue(Queue<T>* queue) {
+    /*Diz se a fila está vazia ou não.*/
+    return queue->ptrFirst == nullptr;
 }
 
-void enQueue(Queue* const queue, NodeTree* iValue){
-	/*Adiciona elemento na fila*/
-	
-	Node* newElement = createNode(iValue);
+template <typename T>
+void enQueue(Queue<T>* const queue, T iValue) {
+    /*Adiciona elemento na fila*/
+    Node<T>* newElement = createNode(iValue);
 
-	// Se a fila estiver vazia.
-	if(emptyQueue(queue)){
-		queue->ptrFirst = newElement;
+    if (emptyQueue(queue)) {
+        queue->ptrFirst = newElement;
+        return;
+    }
 
-		return;
-	}
+    Node<T>* current = queue->ptrFirst;
+    while (current->ptrNext != nullptr) current = current->ptrNext;
 
-	// Percorrendo a lista toda.
-	Node* current = queue->ptrFirst;
-	while(current->ptrNext != nullptr) current = current->ptrNext;
-
-	// Adicionando novo elemento.
-	current->ptrNext = newElement;
-
-	return;
+    current->ptrNext = newElement;
 }
 
-NodeTree* deQueue(Queue* queue){
-	/*Remove elemento da fila.*/
-	
-	if(emptyQueue(queue)) return nullptr;
+template <typename T>
+T deQueue(Queue<T>* queue) {
+    /*Remove elemento da fila.*/
+    if (emptyQueue(queue)) return nullptr;
 
-	// Vamos deletar o primeiro nó.
-	Node* deletionNode = queue->ptrFirst;
-	NodeTree* treeNode = deletionNode->iPayload;
-	// E setamos o segundo para ser o novo primeiro.
-	queue->ptrFirst = deletionNode->ptrNext;
+    Node<T>* deletionNode = queue->ptrFirst;
+    T treeNode = deletionNode->iPayload;
+    queue->ptrFirst = deletionNode->ptrNext;
 
-	free(deletionNode);
-
-	return treeNode;
+    delete deletionNode;
+    return treeNode;
 }
 
-void showElements(Queue* const queue){
-	if(emptyQueue(queue)) return;
-	
-	cout << "Payload: ";
-	Node* current = queue->ptrFirst;
+template <typename T>
+void showElements(Queue<T>* const queue) {
+    if (emptyQueue(queue)) return;
 
-	while(current != nullptr){
-		cout << current->iPayload << " ";
-
-		current = current->ptrNext;
-	}
-	
-	cout << endl;
-
-	return;
+    cout << "Payload: ";
+    Node<T>* current = queue->ptrFirst;
+    while (current != nullptr) {
+        cout << current->iPayload << " ";
+        current = current->ptrNext;
+    }
+    cout << endl;
 }
 
-void deleteQueue(Queue* const queue){
-	if(emptyQueue(queue)){
-		free(queue);
+template <typename T>
+void deleteQueue(Queue<T>* const queue) {
+    if (emptyQueue(queue)) {
+        delete queue;
+        return;
+    }
 
-		return;
-	}
-
-	// Removendo elementos até que a fila esteja vazia.
-	while(!emptyQueue(queue)) deQueue(queue);
-
-	// Liberando memória da fila.
-	free(queue);
-
-	return;
+    while (!emptyQueue(queue)) deQueue(queue);
+    delete queue;
 }
+
+// Funções de árvore binária
+template <typename T>
+NodeTree<T>* createNodeTree(T iValue) {
+    /*Cria nó da árvore binária.*/
+    NodeTree<T>* newNodeTree = new NodeTree<T>;
+    newNodeTree->iPayload = iValue;
+    newNodeTree->ptrLeft = nullptr;
+    newNodeTree->ptrRight = nullptr;
+    return newNodeTree;
+}
+
+template <typename T>
+NodeTree<T>* insertNodeTree(NodeTree<T>* startingNodeTree, T iValue) {
+    /*Insere um nó na árvore binária.*/
+    if (startingNodeTree == nullptr) {
+        return createNodeTree(iValue);
+    }
+    if (iValue < startingNodeTree->iPayload) {
+        startingNodeTree->ptrLeft = insertNodeTree(startingNodeTree->ptrLeft, iValue);
+    } else {
+        startingNodeTree->ptrRight = insertNodeTree(startingNodeTree->ptrRight, iValue);
+    }
+    return startingNodeTree;
+}
+
+template <typename T>
+NodeTree<T>* lesserLeaf(NodeTree<T>* root) {
+    /*Retorna o menor nó da árvore/subárvore.*/
+    if (root == nullptr) return nullptr;
+    NodeTree<T>* current = root;
+    while (current && current->ptrLeft != nullptr) current = current->ptrLeft;
+    return current;
+}
+
+template <typename T>
+NodeTree<T>* deleteNodeTree(NodeTree<T>* root, T iValue) {
+    /*Deleta um nó da árvore de acordo com seu valor.*/
+    if (root == nullptr) return nullptr;
+    if (iValue < root->iPayload) root->ptrLeft = deleteNodeTree(root->ptrLeft, iValue);
+    else if (iValue > root->iPayload) root->ptrRight = deleteNodeTree(root->ptrRight, iValue);
+    else {
+        NodeTree<T>* ptrTemp = nullptr;
+        if (root->ptrLeft == nullptr) {
+            ptrTemp = root->ptrRight;
+            delete root;
+            return ptrTemp;
+        } else if (root->ptrRight == nullptr) {
+            ptrTemp = root->ptrLeft;
+            delete root;
+            return ptrTemp;
+        }
+        ptrTemp = lesserLeaf(root->ptrRight);
+        root->iPayload = ptrTemp->iPayload;
+        root->ptrRight = deleteNodeTree(root->ptrRight, ptrTemp->iPayload);
+    }
+    return root;
+}
+
+template <typename T>
+void inOrderTraverse(NodeTree<T>* root) {
+    /*Percorre a árvore na forma In Order Traverse*/
+    if (root != nullptr) {
+        inOrderTraverse(root->ptrLeft);
+        cout << root->iPayload << " ";
+        inOrderTraverse(root->ptrRight);
+    }
+}
+
+template <typename T>
+void preOrderTraverse(NodeTree<T>* root) {
+    /*Percorre a árvore na forma Pre Order Traverse*/
+    if (root != nullptr) {
+        cout << root->iPayload << " ";
+        preOrderTraverse(root->ptrLeft);
+        preOrderTraverse(root->ptrRight);
+    }
+}
+
+template <typename T>
+void postOrderTraverse(NodeTree<T>* root) {
+    /*Percorre a árvore na forma Post Order Traverse*/
+    if (root != nullptr) {
+        postOrderTraverse(root->ptrLeft);
+        postOrderTraverse(root->ptrRight);
+        cout << root->iPayload << " ";
+    }
+}
+
+template <typename T>
+void bfsTraverse(NodeTree<T>* root) {
+    /*Percorre árvore na forma Breadth First.*/
+    if (root == nullptr) return;
+    queue<NodeTree<T>*> q;
+    q.push(root);
+    while (!q.empty()) {
+        NodeTree<T>* current = q.front();
+        q.pop();
+        cout << current->iPayload << " ";
+        if (current->ptrLeft != nullptr) q.push(current->ptrLeft);
+        if (current->ptrRight != nullptr) q.push(current->ptrRight);
+    }
+}
+
+#endif
