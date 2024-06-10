@@ -104,6 +104,22 @@ void registraTempoLista(ofstream &file, int size, int offset, int range, bool en
     return;
 }
 
+// Função para registrar o tempo das travessias
+template <typename T>
+void registraTempoTravessia(ofstream &file, NodeTree<T>* root, void (*func)(NodeTree<T>*), const string &name, bool endLine) {
+    auto timeStart = high_resolution_clock::now();
+    func(root);
+    auto timeEnd = high_resolution_clock::now();
+    auto timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
+    int iCountTimeTaken = timeTaken.count();
+
+    if (endLine)
+        file << iCountTimeTaken << endl;
+    else
+        file << iCountTimeTaken << ",";
+
+    cout << "Tempo de execução da " << name << ": " << iCountTimeTaken << " nanossegundos." << endl;
+}
 
 int main(){
     // Criar 100 listas com 10.000 elementos e ordená-las usando cada um dos algorítmos.
@@ -124,52 +140,52 @@ int main(){
     
     // Operações de arquivo.
     // Criando variável que permite manipulação de arquivos no modo de escrita.
-    ofstream file1;
-    // Criando arquivo.
-    file1.open("tempos.csv");
-    if (!file1) {
-        cerr << "Erro ao abrir o arquivo tempos.csv" << endl;
-        return 1;
-    }
-    // Colocando cabeçalhos.
-    file1 << "bs,obs,ss,oss,is,cs,cl,ca" << endl;
+    // ofstream file1;
+    // // Criando arquivo.
+    // file1.open("tempos.csv");
+    // if (!file1) {
+    //     cerr << "Erro ao abrir o arquivo tempos.csv" << endl;
+    //     return 1;
+    // }
+    // // Colocando cabeçalhos.
+    // file1 << "bs,obs,ss,oss,is,cs,cl,ca" << endl;
 
-    for (int i = 0; i < iNumberOfLists; i++){
-        cout << i + 1 << " sequência de listas." << endl;
+    // for (int i = 0; i < iNumberOfLists; i++){
+    //     cout << i + 1 << " sequência de listas." << endl;
 
-        // Bubble Sort.
-        head = criaLista<int>(iSize, iOffset, iRange);
-        cout << "Ordenando com Bubble Sort" << endl;
-        registraTempo(file1, head, BubbleSort::bubbleSort<int>, false);
+    //     // Bubble Sort.
+    //     head = criaLista<int>(iSize, iOffset, iRange);
+    //     cout << "Ordenando com Bubble Sort" << endl;
+    //     registraTempo(file1, head, BubbleSort::bubbleSort<int>, false);
 
-        // Optimized Bubble Sort.
-        head = criaLista<int>(iSize, iOffset, iRange);
-        cout << "Ordenando com Optimized Bubble Sort" << endl;
-        registraTempo(file1, head, BubbleSort::optimizedBubbleSort<int>, false);
+    //     // Optimized Bubble Sort.
+    //     head = criaLista<int>(iSize, iOffset, iRange);
+    //     cout << "Ordenando com Optimized Bubble Sort" << endl;
+    //     registraTempo(file1, head, BubbleSort::optimizedBubbleSort<int>, false);
 
-        // Selection Sort.
-        head = criaLista<int>(iSize, iOffset, iRange);
-        cout << "Ordenando com Selection Sort" << endl;
-        registraTempo(file1, head, SelectionSort::selectionSort<int>, false);
+    //     // Selection Sort.
+    //     head = criaLista<int>(iSize, iOffset, iRange);
+    //     cout << "Ordenando com Selection Sort" << endl;
+    //     registraTempo(file1, head, SelectionSort::selectionSort<int>, false);
 
-        // Optimized Selection Sort.
-        head = criaLista<int>(iSize, iOffset, iRange);
-        cout << "Ordenando com Optimized Selection Sort" << endl;
-        registraTempo(file1, head, SelectionSort::optimizedSelectionSort<int>, false);
+    //     // Optimized Selection Sort.
+    //     head = criaLista<int>(iSize, iOffset, iRange);
+    //     cout << "Ordenando com Optimized Selection Sort" << endl;
+    //     registraTempo(file1, head, SelectionSort::optimizedSelectionSort<int>, false);
 
-        // Insertion Sort.
-        head = criaLista<int>(iSize, iOffset, iRange);
-        cout << "Ordenando com Insertion Sort" << endl;
-        registraTempo(file1, head, InsertionSort::insertionSort<int>, false);
+    //     // Insertion Sort.
+    //     head = criaLista<int>(iSize, iOffset, iRange);
+    //     cout << "Ordenando com Insertion Sort" << endl;
+    //     registraTempo(file1, head, InsertionSort::insertionSort<int>, false);
 
-        // Counting Sort.
-        head = criaLista<int>(iSize, iOffset, iRange);
-        cout << "Ordenando com Counting Sort" << endl;
-        registraTempo(file1, head, CountingSort::countingSort<int>, true);
-    }
+    //     // Counting Sort.
+    //     head = criaLista<int>(iSize, iOffset, iRange);
+    //     cout << "Ordenando com Counting Sort" << endl;
+    //     registraTempo(file1, head, CountingSort::countingSort<int>, true);
+    // }
 
-    // Fechar o primeiro arquivo
-    file1.close();
+    // // Fechar o primeiro arquivo
+    // file1.close();
 
     // Criar o segundo arquivo
     ofstream file2;
@@ -179,16 +195,30 @@ int main(){
         return 1;
     }
     
-    file2 << "criacao_arvore,criacao_lista" << endl;
+    file2 << "criacao_arvore,criacao_lista,in_order,pre_order,post_order,bfs" << endl;
 
-    for (int i = 0; i < iNumberOfLists; i++){
+    for (int i = 0; i < iNumberOfLists; i++) {
         cout << i + 1 << " sequência de comparações." << endl;
 
         // Medindo o tempo de criação da árvore binária.
+        NodeTree<int>* root = createNodeTree<int>(iSize, iOffset, iRange);
         registraTempoArvore<int>(file2, iSize, iOffset, iRange, false);
 
         // Medindo o tempo de criação da lista duplamente ligada.
-        registraTempoLista<int>(file2, iSize, iOffset, iRange, true);
+        registraTempoLista<int>(file2, iSize, iOffset, iRange, false);
+
+        // Medindo o tempo das travessias
+        cout << "Medindo travessias In Order" << endl;
+        registraTempoTravessia(file2, root, inOrderTraverse<int>, "In Order Traverse", false);
+
+        cout << "Medindo travessias Pre Order" << endl;
+        registraTempoTravessia(file2, root, preOrderTraverse<int>, "Pre Order Traverse", false);
+
+        cout << "Medindo travessias Post Order" << endl;
+        registraTempoTravessia(file2, root, postOrderTraverse<int>, "Post Order Traverse", false);
+
+        cout << "Medindo travessia BFS" << endl;
+        registraTempoTravessia(file2, root, bfsTraverse<int>, "BFS", true);
     }
 
     file2.close();
