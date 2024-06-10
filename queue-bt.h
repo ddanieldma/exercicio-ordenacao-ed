@@ -15,12 +15,6 @@ struct NodeTree {
 };
 
 template <typename T>
-struct Node {
-    T iPayload;
-    NodeTree<T>* ptrNext;
-};
-
-template <typename T>
 struct Queue {
     Node<T>* ptrFirst;
 };
@@ -68,7 +62,7 @@ template <typename T>
 void bfsTraverse(NodeTree<T>* root);
 
 template <typename T>
-NodeTree<T>* createNodeTree(int, int, int);
+NodeTree<T>* populateTree(int, int, int);
 
 template <typename T>
 Queue<T>* createQueue() {
@@ -323,7 +317,7 @@ NodeTree<T>* getBfsTraverse(NodeTree<T>* root, T iValue){
 }
 
 template <typename T>
-NodeTree<T>* createNodeTree(int size, int offset, int range) {
+NodeTree<T>* populateTree(int size, int offset, int range) {
     /*Cria uma árvore binária com um número específico de elementos.*/
     NodeTree<T>* root = nullptr;
     srand((unsigned) time(NULL));

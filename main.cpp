@@ -19,14 +19,11 @@ using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
 using std::chrono::nanoseconds;
 
-// Transformando processo de medir tempo em função.
-// Aqui será utilizado um ponteiro para função para que possamos usar qualquer
-// método de ordenação e registrar seu tempo.
 
 template <typename T>
-void registraTempo(ofstream &file, Node<T>* head, void (*func)(Node<T>**), bool endLine){
-    // Calcula o tempo gasto pelo algorítmo de ordenação, imprime no terminal
-    // e armazena esse tempo no arquivo especificado.
+void registraTempoOrdenacao(ofstream &file, Node<T>* head, void (*func)(Node<T>**), bool endLine){
+    /* Calcula o tempo gasto pelo algorítmo de ordenação, imprime no terminal
+    e armazena esse tempo no arquivo especificado. */
 
     auto timeStart = high_resolution_clock::now();
     // Chamando função de ordenação da DLL.
@@ -47,12 +44,14 @@ void registraTempo(ofstream &file, Node<T>* head, void (*func)(Node<T>**), bool 
 }
 
 template <typename T>
-void registraTempoArvore(ofstream &file, int size, int offset, int range, bool endLine){
-    // Calcula o tempo gasto para criar a árvore binária e armazena no arquivo especificado.
+void registraTempoCriacaoArvore(ofstream &file, int size, int offset, int range, bool endLine){
+    /*Calcula o tempo gasto para criar e popular a árvore binária e armazena no 
+    arquivo especificado.*/
 
     auto timeStart = high_resolution_clock::now();
-    NodeTree<T>* root = createNodeTree<T>(size, offset, range);
+    NodeTree<T>* root = populateTree<T>(size, offset, range);
     auto timeEnd = high_resolution_clock::now();
+
     auto timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
     int iCountTimeTaken = timeTaken.count();
 
@@ -66,6 +65,8 @@ void registraTempoArvore(ofstream &file, int size, int offset, int range, bool e
 
 template <typename T>
 Node<T>* criaLista(int iSize, int iOffset, int iRange){
+    /*Cria lista duplamente e popula com elementos aleatórios.*/
+    
     // Criando nova lista.
     Node<T>* head = nullptr;
 
@@ -84,12 +85,14 @@ Node<T>* criaLista(int iSize, int iOffset, int iRange){
 }
 
 template <typename T>
-void registraTempoLista(ofstream &file, int size, int offset, int range, bool endLine){
-    // Calcula o tempo gasto para criar a lista duplamente ligada e armazena no arquivo especificado.
+void registraTempoCriacaoLista(ofstream &file, int size, int offset, int range, bool endLine){
+    /*Calcula o tempo gasto para criar e popular a lista duplamente encadeada e armazena no 
+    arquivo especificado.*/
 
     auto timeStart = high_resolution_clock::now();
     Node<T>* head = criaLista<T>(size, offset, range);
     auto timeEnd = high_resolution_clock::now();
+    
     auto timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
     int iCountTimeTaken = timeTaken.count();
 
@@ -104,21 +107,40 @@ void registraTempoLista(ofstream &file, int size, int offset, int range, bool en
     return;
 }
 
-// Função para registrar o tempo das travessias
+// Função para registrar o tempo das buscas.
 template <typename T>
-void registraTempoTravessia(ofstream &file, NodeTree<T>* root, void (*func)(NodeTree<T>*), const string &name, bool endLine) {
-    auto timeStart = high_resolution_clock::now();
-    func(root);
-    auto timeEnd = high_resolution_clock::now();
-    auto timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
-    int iCountTimeTaken = timeTaken.count();
+void registraTempoBusca(ofstream &file, NodeTree<T>* root, long int iNumSearches, NodeTree<T>* (*func)(NodeTree<T>*, T), const string &name, bool endLine) {
+    /*Registra o tempo médio gasto para busca de um nó na árvore
+    e armazena no arquivo especificado.*/
+
+    long int fullTime = 0;
+
+    srand((unsigned) time(NULL));
+    T iRandom;
+    
+    for (int i = 0; i < iNumSearches; i++){
+        // Criando número aleatório para ser buscado.
+        iRandom = 0 + (rand() % (1000 + 1 - 0));
+        
+        auto timeStart = high_resolution_clock::now();
+        NodeTree<T>* searchedNode = func(root, iRandom);
+        auto timeEnd = high_resolution_clock::now();
+
+        auto timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
+        int iCountTimeTaken = timeTaken.count();
+
+        // Armazenando o tempo de todas as buscas.
+        fullTime += iCountTimeTaken;
+    }
+
+    long int meanTime = fullTime/iNumSearches;
 
     if (endLine)
-        file << iCountTimeTaken << endl;
+        file << meanTime << endl;
     else
-        file << iCountTimeTaken << ",";
+        file << meanTime << ",";
 
-    cout << "Tempo de execução da " << name << ": " << iCountTimeTaken << " nanossegundos." << endl;
+    cout << "Tempo médio de execução da " << name << ": " << meanTime << " nanossegundos." << endl;
 }
 
 int main(){
@@ -156,32 +178,32 @@ int main(){
     //     // Bubble Sort.
     //     head = criaLista<int>(iSize, iOffset, iRange);
     //     cout << "Ordenando com Bubble Sort" << endl;
-    //     registraTempo(file1, head, BubbleSort::bubbleSort<int>, false);
+    //     registraTempoOrdenacao(file1, head, BubbleSort::bubbleSort<int>, false);
 
     //     // Optimized Bubble Sort.
     //     head = criaLista<int>(iSize, iOffset, iRange);
     //     cout << "Ordenando com Optimized Bubble Sort" << endl;
-    //     registraTempo(file1, head, BubbleSort::optimizedBubbleSort<int>, false);
+    //     registraTempoOrdenacao(file1, head, BubbleSort::optimizedBubbleSort<int>, false);
 
     //     // Selection Sort.
     //     head = criaLista<int>(iSize, iOffset, iRange);
     //     cout << "Ordenando com Selection Sort" << endl;
-    //     registraTempo(file1, head, SelectionSort::selectionSort<int>, false);
+    //     registraTempoOrdenacao(file1, head, SelectionSort::selectionSort<int>, false);
 
     //     // Optimized Selection Sort.
     //     head = criaLista<int>(iSize, iOffset, iRange);
     //     cout << "Ordenando com Optimized Selection Sort" << endl;
-    //     registraTempo(file1, head, SelectionSort::optimizedSelectionSort<int>, false);
+    //     registraTempoOrdenacao(file1, head, SelectionSort::optimizedSelectionSort<int>, false);
 
     //     // Insertion Sort.
     //     head = criaLista<int>(iSize, iOffset, iRange);
     //     cout << "Ordenando com Insertion Sort" << endl;
-    //     registraTempo(file1, head, InsertionSort::insertionSort<int>, false);
+    //     registraTempoOrdenacao(file1, head, InsertionSort::insertionSort<int>, false);
 
     //     // Counting Sort.
     //     head = criaLista<int>(iSize, iOffset, iRange);
     //     cout << "Ordenando com Counting Sort" << endl;
-    //     registraTempo(file1, head, CountingSort::countingSort<int>, true);
+    //     registraTempoOrdenacao(file1, head, CountingSort::countingSort<int>, true);
     // }
 
     // // Fechar o primeiro arquivo
@@ -201,24 +223,24 @@ int main(){
         cout << i + 1 << " sequência de comparações." << endl;
 
         // Medindo o tempo de criação da árvore binária.
-        NodeTree<int>* root = createNodeTree<int>(iSize, iOffset, iRange);
-        registraTempoArvore<int>(file2, iSize, iOffset, iRange, false);
+        NodeTree<int>* root = populateTree<int>(iSize, iOffset, iRange);
+        registraTempoCriacaoArvore<int>(file2, iSize, iOffset, iRange, false);
 
         // Medindo o tempo de criação da lista duplamente ligada.
-        registraTempoLista<int>(file2, iSize, iOffset, iRange, false);
+        registraTempoCriacaoLista<int>(file2, iSize, iOffset, iRange, false);
 
         // Medindo o tempo das travessias
         cout << "Medindo travessias In Order" << endl;
-        registraTempoTravessia(file2, root, inOrderTraverse<int>, "In Order Traverse", false);
+        registraTempoBusca<int>(file2, root, 100, getInOrderTraverse<int>, "In Order Traverse", false);
 
         cout << "Medindo travessias Pre Order" << endl;
-        registraTempoTravessia(file2, root, preOrderTraverse<int>, "Pre Order Traverse", false);
+        registraTempoBusca<int>(file2, root, 100, getPreOrderTraverse<int>, "Pre Order Traverse", false);
 
         cout << "Medindo travessias Post Order" << endl;
-        registraTempoTravessia(file2, root, postOrderTraverse<int>, "Post Order Traverse", false);
+        registraTempoBusca<int>(file2, root, 100, getPostOrderTraverse<int>, "Post Order Traverse", false);
 
         cout << "Medindo travessia BFS" << endl;
-        registraTempoTravessia(file2, root, bfsTraverse<int>, "BFS", true);
+        registraTempoBusca<int>(file2, root, 100, getBfsTraverse<int>, "BFS", true);
     }
 
     file2.close();
