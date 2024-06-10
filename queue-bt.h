@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <queue>
+#include <time.h>
 
 using namespace std;
 
@@ -11,6 +12,12 @@ struct NodeTree {
     T iPayload;
     NodeTree* ptrLeft;
     NodeTree* ptrRight;
+};
+
+template <typename T>
+struct Node {
+    T iPayload;
+    NodeTree<T>* ptrNext;
 };
 
 template <typename T>
@@ -199,6 +206,26 @@ void inOrderTraverse(NodeTree<T>* root) {
 }
 
 template <typename T>
+NodeTree<T>* getInOrderTraverse(NodeTree<T>* root, T iValue){
+    /*Percorre a árvore na forma In Order Traverse*/
+
+    if (root != nullptr) {
+        // Pesquisa pela árvore da esquerda.
+        NodeTree<T>* leftResult = getInOrderTraverse(root->ptrLeft, iValue);
+        if (leftResult != nullptr) return leftResult;
+        
+        // Olha o nó atual.
+        if(root->iPayload == iValue) return root;
+
+        // Pesquisa pela árvore da direita.
+        NodeTree<T>* rightResult = getInOrderTraverse(root->ptrRight, iValue);
+        if (rightResult != nullptr) return rightResult;
+    }
+
+    return nullptr;
+}
+
+template <typename T>
 void preOrderTraverse(NodeTree<T>* root) {
     /*Percorre a árvore na forma Pre Order Traverse*/
     if (root != nullptr) {
@@ -209,6 +236,26 @@ void preOrderTraverse(NodeTree<T>* root) {
 }
 
 template <typename T>
+NodeTree<T>* getPreOrderTraverse(NodeTree<T>* root, T iValue){
+    /*Percorre a árvore na forma In Order Traverse*/
+
+    if (root != nullptr) {
+        // Olha o nó atual.
+        if(root->iPayload == iValue) return root;
+        
+        // Pesquisa pela árvore da esquerda.
+        NodeTree<T>* leftResult = getPreOrderTraverse(root->ptrLeft, iValue);
+        if (leftResult != nullptr) return leftResult;
+
+        // Pesquisa pela árvore da direita.
+        NodeTree<T>* rightResult = getPreOrderTraverse(root->ptrRight, iValue);
+        if (rightResult != nullptr) return rightResult;
+    }
+
+    return nullptr;
+}
+
+template <typename T>
 void postOrderTraverse(NodeTree<T>* root) {
     /*Percorre a árvore na forma Post Order Traverse*/
     if (root != nullptr) {
@@ -216,6 +263,26 @@ void postOrderTraverse(NodeTree<T>* root) {
         postOrderTraverse(root->ptrRight);
         cout << root->iPayload << " ";
     }
+}
+
+template <typename T>
+NodeTree<T>* getPostOrderTraverse(NodeTree<T>* root, T iValue){
+    /*Percorre a árvore na forma In Order Traverse*/
+
+    if (root != nullptr) {
+        // Pesquisa pela árvore da esquerda.
+        NodeTree<T>* leftResult = getPreOrderTraverse(root->ptrLeft, iValue);
+        if (leftResult != nullptr) return leftResult;
+        
+        // Pesquisa pela árvore da direita.
+        NodeTree<T>* rightResult = getPreOrderTraverse(root->ptrRight, iValue);
+        if (rightResult != nullptr) return rightResult;
+        
+        // Olha o nó atual.
+        if(root->iPayload == iValue) return root;
+    }
+
+    return nullptr;
 }
 
 template <typename T>
@@ -231,6 +298,28 @@ void bfsTraverse(NodeTree<T>* root) {
         if (current->ptrLeft != nullptr) q.push(current->ptrLeft);
         if (current->ptrRight != nullptr) q.push(current->ptrRight);
     }
+}
+
+template <typename T>
+NodeTree<T>* getBfsTraverse(NodeTree<T>* root, T iValue){
+    /*Percorre árvore na forma Breadth First.*/
+    
+    if (root == nullptr) return nullptr;
+
+    queue<NodeTree<T>*> q;
+    q.push(root);
+
+    while (!q.empty()) {
+        NodeTree<T>* current = q.front();
+        q.pop();
+        
+        if(current->iPayload == iValue) return current;
+
+        if (current->ptrLeft != nullptr) q.push(current->ptrLeft);
+        if (current->ptrRight != nullptr) q.push(current->ptrRight);
+    }
+
+    return nullptr;
 }
 
 template <typename T>
