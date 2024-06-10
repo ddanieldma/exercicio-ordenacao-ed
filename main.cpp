@@ -5,6 +5,7 @@
 #include "sortings/selection-sort.h"
 #include "sortings/insertion-sort.h"
 #include "sortings/counting-sort.h"
+#include "queue-bt.h"
 #include <chrono>
 #include <time.h>
 #include <fstream>
@@ -46,6 +47,24 @@ void registraTempo(ofstream &file, Node<T>* head, void (*func)(Node<T>**), bool 
 }
 
 template <typename T>
+void registraTempoArvore(ofstream &file, int size, int offset, int range, bool endLine){
+    // Calcula o tempo gasto para criar a árvore binária e armazena no arquivo especificado.
+
+    auto timeStart = high_resolution_clock::now();
+    NodeTree<T>* root = createNodeTree<T>(size, offset, range);
+    auto timeEnd = high_resolution_clock::now();
+    auto timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
+    int iCountTimeTaken = timeTaken.count();
+
+    // Colocando tempo de execução no csv.
+    file << iCountTimeTaken << ",";
+    
+    cout << "Tempo de criação da árvore: " << iCountTimeTaken << " nanossegundos." << endl;
+
+    return;
+}
+
+template <typename T>
 Node<T>* criaLista(int iSize, int iOffset, int iRange){
     // Criando nova lista.
     Node<T>* head = nullptr;
@@ -64,6 +83,26 @@ Node<T>* criaLista(int iSize, int iOffset, int iRange){
     return head;
 }
 
+template <typename T>
+void registraTempoLista(ofstream &file, int size, int offset, int range, bool endLine){
+    // Calcula o tempo gasto para criar a lista duplamente ligada e armazena no arquivo especificado.
+
+    auto timeStart = high_resolution_clock::now();
+    Node<T>* head = criaLista<T>(size, offset, range);
+    auto timeEnd = high_resolution_clock::now();
+    auto timeTaken = duration_cast<nanoseconds>(timeEnd - timeStart);
+    int iCountTimeTaken = timeTaken.count();
+
+    // Colocando tempo de execução no csv.
+    if (endLine)
+        file << iCountTimeTaken << endl;
+    else
+        file << iCountTimeTaken << ",";
+    
+    cout << "Tempo de criação da lista: " << iCountTimeTaken << " nanossegundos." << endl;
+
+    return;
+}
 
 int main(){
     // Criar 100 listas com 10.000 elementos e ordená-las usando cada um dos algorítmos.
@@ -88,8 +127,9 @@ int main(){
     // Criando arquivo.
     file.open("tempos.csv");
     // Colocando cabeçalhos.
-    file << "bs,obs,ss,oss,is,cs" << endl;
+    file << "bs,obs,ss,oss,is,cs,cl,ca" << endl;
 
+    
     for (int i = 0; i < iNumberOfLists; i++){
         cout << i + 1 << " sequência de listas." << endl;
 
@@ -122,6 +162,20 @@ int main(){
         head = criaLista<int>(iSize, iOffset, iRange);
         cout << "Ordenando com Counting Sort" << endl;
         registraTempo(file, head, CountingSort::countingSort<int>, true);
+    }
+
+    file.open("tempos_comparacao.csv");
+    
+    file << "criacao_arvore,criacao_lista" << endl;
+
+    for (int i = 0; i < iNumberOfLists; i++){
+        cout << i + 1 << " sequência de comparações." << endl;
+
+        // Medindo o tempo de criação da árvore binária.
+        registraTempoArvore<int>(file, iSize, iOffset, iRange, false);
+
+        // Medindo o tempo de criação da lista duplamente ligada.
+        registraTempoLista<int>(file, iSize, iOffset, iRange, true);
     }
 
     return 0;
